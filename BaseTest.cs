@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -18,8 +20,22 @@ public class BaseTest
     {
         var result = await _client.GetAsync($"https://jsonplaceholder.typicode.com/posts/{id}");
         result.EnsureSuccessStatusCode();
-        var json = await result.Content.ReadAsStringAsync();
-       return JsonConvert.DeserializeObject<Post>(json);
+        var jsonString = await result.Content.ReadAsStringAsync();
+        return createObject<Post>(jsonString);
+
+    }
+
+    protected async Task<List<Post>> AllPosts()
+    {
+        var result = await _client.GetAsync("https://jsonplaceholder.typicode.com/posts");
+        result.EnsureSuccessStatusCode();
+        var jsonString = await result.Content.ReadAsStringAsync();
+        return createObject<List<Post>>(jsonString);
+    }
+
+    private T createObject<T>(string data)
+    {
+        return JsonConvert.DeserializeObject<T>(data);
     }
 }
 
