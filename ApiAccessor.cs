@@ -14,7 +14,7 @@ public class ApiAccessor
     {
         _client = new HttpClient();
     }
-    protected async Task<Post> GetById(int id)
+    protected async Task<Post> GetPostById(int id)
     {
         var result = await _client.GetAsync($"https://jsonplaceholder.typicode.com/posts/{id}");
         result.EnsureSuccessStatusCode();
@@ -30,6 +30,14 @@ public class ApiAccessor
         var jsonString = await result.Content.ReadAsStringAsync();
         return createObject<List<Post>>(jsonString);
     }
+    protected async Task<List<Comment>> Comments(int postId)
+    {
+        var result = await _client
+            .GetAsync($"https://jsonplaceholder.typicode.com/comments?postId={postId}");
+        result.EnsureSuccessStatusCode();
+        var jsonString = await result.Content.ReadAsStringAsync();
+        return createObject<List<Comment>>(jsonString);
+    }
 
     protected async Task<Post> CreatePost(Post data)
     {
@@ -41,6 +49,15 @@ public class ApiAccessor
         return createObject<Post>(jsonResult);
     }
 
+    protected async Task<Comment> CreateComment(Comment data)
+    {
+        string commentData = JsonConvert.SerializeObject(data);
+        StringContent httpContent = new StringContent(commentData, System.Text.Encoding.UTF8, "application/json");
+        var response = await _client.PostAsync( $"https://jsonplaceholder.typicode.com/posts/{data.postId}/comment", httpContent);
+        response.EnsureSuccessStatusCode();
+        var jsonResult = await response.Content.ReadAsStringAsync();
+        return createObject<Comment>(jsonResult);
+    }
     protected async Task<Post> UpdatePost(Post newData)
     {
         string newPostData = JsonConvert.SerializeObject(newData);
