@@ -14,68 +14,69 @@ public class ApiAccessor
     {
         _client = new HttpClient();
     }
-    protected async Task<Post> GetPostById(int id)
+    public async Task<Post> GetPostById(int id)
     {
         var result = await _client.GetAsync($"https://jsonplaceholder.typicode.com/posts/{id}");
-        result.EnsureSuccessStatusCode();
-        var jsonString = await result.Content.ReadAsStringAsync();
+
+        var jsonString = await ProcessHttpResponseMessage(result);
         return createObject<Post>(jsonString);
 
     }
 
-    protected async Task<List<Post>> AllPosts()
+    public async Task<List<Post>> AllPosts()
     {
         var result = await _client.GetAsync("https://jsonplaceholder.typicode.com/posts");
-        result.EnsureSuccessStatusCode();
-        var jsonString = await result.Content.ReadAsStringAsync();
+        var jsonString = await ProcessHttpResponseMessage(result);
         return createObject<List<Post>>(jsonString);
     }
-    protected async Task<List<Comment>> Comments(int postId)
+    public async Task<List<Comment>> Comments(int postId)
     {
         var result = await _client
             .GetAsync($"https://jsonplaceholder.typicode.com/comments?postId={postId}");
-        result.EnsureSuccessStatusCode();
-        var jsonString = await result.Content.ReadAsStringAsync();
+        var jsonString = await ProcessHttpResponseMessage(result);
         return createObject<List<Comment>>(jsonString);
     }
 
-    protected async Task<Post> CreatePost(Post data)
+    public async Task<Post> CreatePost(Post data)
     {
         string postData = JsonConvert.SerializeObject(data);
         StringContent httpContent = new StringContent(postData, System.Text.Encoding.UTF8, "application/json");
         var response = await _client.PostAsync("https://jsonplaceholder.typicode.com/posts", httpContent);
-        response.EnsureSuccessStatusCode();
-        var jsonResult = await response.Content.ReadAsStringAsync();
+        var jsonResult = await ProcessHttpResponseMessage(response);
         return createObject<Post>(jsonResult);
     }
 
-    protected async Task<Comment> CreateComment(Comment data)
+    public async Task<Comment> CreateComment(Comment data)
     {
         string commentData = JsonConvert.SerializeObject(data);
         StringContent httpContent = new StringContent(commentData, System.Text.Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync( $"https://jsonplaceholder.typicode.com/posts/{data.postId}/comment", httpContent);
-        response.EnsureSuccessStatusCode();
-        var jsonResult = await response.Content.ReadAsStringAsync();
+        var response = await _client.PostAsync( $"https://jsonplaceholder.typicode.com/posts/{data.postId}/comments", httpContent);
+        var jsonResult = await ProcessHttpResponseMessage(response);
         return createObject<Comment>(jsonResult);
     }
-    protected async Task<Post> UpdatePost(Post newData)
+    public async Task<Post> UpdatePost(Post newData)
     {
         string newPostData = JsonConvert.SerializeObject(newData);
         StringContent httpContent = new StringContent(newPostData, System.Text.Encoding.UTF8, "application/json");
 
-        var response = await _client.PutAsync($"https://jsonplaceholder.typicode.com/posts{newData.id}", httpContent);
-        response.EnsureSuccessStatusCode();
-        var jsonResult = await response.Content.ReadAsStringAsync();
+        var response = await _client.PutAsync($"https://jsonplaceholder.typicode.com/posts/{newData.id}", httpContent);
+        var jsonResult = await ProcessHttpResponseMessage(response);
         return createObject<Post>(jsonResult);
     }
 
-    protected async void Delete(int id)
+    public async void Delete(int id)
     {
-        var response = await _client.DeleteAsync($"https://jsonplaceholder.typicode.com/posts{id}");
+        var response = await _client.DeleteAsync($"https://jsonplaceholder.typicode.com/posts/{id}");
         response.EnsureSuccessStatusCode();
     }
     private T createObject<T>(string data)
     {
         return JsonConvert.DeserializeObject<T>(data);
+    }
+
+    private async Task<string> ProcessHttpResponseMessage(HttpResponseMessage message)
+    {
+        message.EnsureSuccessStatusCode();
+        return await message.Content.ReadAsStringAsync();
     }
 }
