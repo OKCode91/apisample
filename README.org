@@ -11,6 +11,7 @@
  - ApiAccessor serves as the "repository" class for the project.
  - Post represents the post data from the service.
  - Comment represents the comment data from the service.
+ - TestGroup classes split up tests for clarity and to enable parallelism in Xunit.
 
 * Tools used
  - Dotnet 6
