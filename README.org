@@ -1,0 +1,17 @@
+* Instructions
+ - Download the latest version of [[https://dotnet.microsoft.com/en-us/][dotnet]]
+ - Change into project directory and run ~dotnet test~
+
+* Observations
+ - The API has a tendency to return empty strings for otherwise invalid data. A better approach would be to return some response other than 200. This will make handling failure simpler and more explicit for all clients.
+ - The API could use more stringent validation of field data, a realistic API should have field validation for inputs and a list of what those validations are for clients.
+ - The API could also use an endpoint that returned all of the data related to a user in one call. This would minimize the number of calls required to build a full record. This would be extremely useful for user dashboards and other similar types of data displays.
+
+* Basic Structure
+ - ApiAccessor serves as the "repository" class for the project.
+ - Post represents the post data from the service.
+ - Comment represents the comment data from the service.
+
+* Tools used
+ - Dotnet 6
+ - Xunit 2.4.1
