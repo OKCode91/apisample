@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 
 namespace ApiSample;
@@ -20,5 +21,13 @@ public class TestGroup1:BaseTest
     {
         var result = await _client.CreatePost(newPost);
         Assert.NotNull(result.id);
+    }
+[Theory]
+[InlineData(2)]
+[InlineData(1)]
+    public async void CanGetCommentByPostId(int postId)
+    {
+        var result = await _client.GetComments(postId);
+        Assert.True(result.Count>0);
     }
 }

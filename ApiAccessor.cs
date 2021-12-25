@@ -29,7 +29,7 @@ public class ApiAccessor
         var jsonString = await ProcessHttpResponseMessage(result);
         return createObject<List<Post>>(jsonString);
     }
-    public async Task<List<Comment>> Comments(int postId)
+    public async Task<List<Comment>> GetComments(int postId)
     {
         var result = await _client
             .GetAsync($"https://jsonplaceholder.typicode.com/comments?postId={postId}");

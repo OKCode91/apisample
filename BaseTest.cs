@@ -40,5 +40,19 @@ public class BaseTest
             new Comment(2, null, LoremNET.Lorem.Words(3), LoremNET.Lorem.Email(),
                 LoremNET.Lorem.Sentence(3, 30))
         };
+    public static TheoryData<Comment> BadCommentData =>
+        new TheoryData<Comment>
+        {
+            new Comment(null, null, LoremNET.Lorem.Words(3), LoremNET.Lorem.Email(),
+                LoremNET.Lorem.Sentence(3, 30))
+        };
+
+    public static TheoryData<Post> BadPostData =>
+        new TheoryData<Post>
+        {
+            new Post(null, null, LoremNET.Lorem.Sentence(3, 15), LoremNET.Lorem.Sentence(3, 15)),
+            new Post(null, null, LoremNET.Lorem.Sentence(3, 15), LoremNET.Lorem.Sentence(3, 15))
+
+        };
 }
 
