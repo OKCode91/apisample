@@ -14,14 +14,6 @@ public class ApiAccessor
     {
         _client = new HttpClient();
     }
-    public async Task<Post> GetPostById(int id)
-    {
-        var result = await _client.GetAsync($"https://jsonplaceholder.typicode.com/posts/{id}");
-
-        var jsonString = await ProcessHttpResponseMessage(result);
-        return createObject<Post>(jsonString);
-
-    }
 
     public async Task<List<Post>> AllPosts()
     {
